@@ -5,7 +5,7 @@ import NoteListPage from './components/NoteListPage.js';
 function App() {
   return (
     <div className="App">
-      <NoteListPage text="React is fun!"/>
+      <NoteListPage text = "React is fun!"/>
     </div>
   );
 }

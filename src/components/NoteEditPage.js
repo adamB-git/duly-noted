@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
-function NoteListPage() {
+export default function NoteEditPage(props) {
+    const { text, onSave } = props;
+
+    const [value, setValue] = useState(text);
+
     return (
-        <textarea>Note Editor</textarea>
+        <div className="page">
+            <h1>Note Edit</h1>
+            <textarea value={value} onChange={(event) => setValue(event.target.value)} />
+            <button type="button" onClick={() => onSave(value)}>Save</button>
+        </div>
     );
 }
+
+NoteEditPage.propTypes = {
+    text: PropTypes.string.isRequired
+};

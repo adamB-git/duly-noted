@@ -6,17 +6,17 @@ const initialNotes = [
     {
         id:"1",
         createdAt: new Date(),
-        text: "This is note 1"
+        text: "This _is_ **note** 1"
     },
     {
         id:"2",
         createdAt: new Date(),
-        text: "This is note 2"
+        text: "This _is_ **note** 2"
     },
     {
         id:"3",
         createdAt: new Date(),
-        text: "This is note 3"
+        text: "This _is_ **note** 3"
     }
 ];
 
@@ -40,11 +40,27 @@ export default function NoteListPage(props) {
         setSelectedNoteId(null);
     };
 
+    const handleOnCancel = () => {
+        setSelectedNoteId(null);
+    };
+
+    const handleOnDelete = () => {
+        for (var i = 0; i < notes.length; i++) {
+            var obj = notes[i];
+        
+            if (selectedNoteId.indexOf(obj.id) !== -1) {
+                notes.splice(i, 1);
+            }
+        }
+        
+        setSelectedNoteId(null);
+    };
+
     if(selectedNoteId){
         const selectedNote = notes.find((note) => note.id === selectedNoteId)
 
         return (
-            <NoteEditPage onSave={handleOnSave} text={selectedNote.text}/>
+            <NoteEditPage onSave={handleOnSave} onCancel={handleOnCancel} onDelete={handleOnDelete} text={selectedNote.text}/>
         )
     }
 

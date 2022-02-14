@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import ReactMarkdown from 'react-markdown'
 
 dayjs.extend(relativeTime);
 
@@ -30,16 +31,21 @@ export default function NoteListItem(props) {
         }
     }
 
-    // const oneHourAgo = Date.now() - (1* 60 * 60 * 1000);
+    const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+
+    function formatDate(date) {
+        if (oneWeekAgo < date) {
+            return dayjs(date).fromNow();
+        } else {
+            return dayjs(date).format("h:m a on M/D/YYYY");
+        }
+    }
 
     return (
         <div className="noteListItem" onClick={handleItemClick}>
+            <ReactMarkdown children={truncatedText} />
             <p>
-                {truncatedText}
-            </p>
-            <p>
-                {dayjs(createdAt).fromNow()}
-                {/* {dayjs(createdAt).format("h:m a on M/D/YYYY")} */}
+                {formatDate(createdAt)}
             </p>
             <p>
                 I've been clicked {timesClicked}

@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import ReactMarkdown from 'react-markdown'
-
-dayjs.extend(relativeTime);
+import ReactMarkdown from 'react-markdown';
+import formatDate from "../util/formatDate";
 
 export default function NoteListItem(props) {
     const {
@@ -14,7 +11,7 @@ export default function NoteListItem(props) {
         text
     } = props;
 
-    const [timesClicked, setTimesClick] = useState(0);
+    // const [timesClicked, setTimesClick] = useState(0);
 
     let truncatedText;
     if (text.length > 200) {
@@ -23,32 +20,19 @@ export default function NoteListItem(props) {
         truncatedText = text;
     }
 
-    const handleItemClick = (event) => {
-        event.preventDefault();
-        setTimesClick(timesClicked + 1);
-        if (onClick) {
-            onClick(id)
-        }
-    }
-
-    const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-
-    function formatDate(date) {
-        if (oneWeekAgo < date) {
-            return dayjs(date).fromNow();
-        } else {
-            return dayjs(date).format("h:m a on M/D/YYYY");
-        }
-    }
+    // const handleItemClick = (event) => {
+    //     event.preventDefault();
+    //     setTimesClick(timesClicked + 1);
+    //     if (onClick) {
+    //         onClick(id)
+    //     }
+    // }
 
     return (
-        <div className="noteListItem" onClick={handleItemClick}>
+        <div className="noteListItem" onClick={() => onClick(id)}>
             <ReactMarkdown children={truncatedText} />
             <p>
                 {formatDate(createdAt)}
-            </p>
-            <p>
-                I've been clicked {timesClicked}
             </p>
         </div>
     );

@@ -48,7 +48,7 @@ export const ClickAction = () => {
 }
 
 //empty state
-export const EmptyTexte = () => {
+export const EmptyText = () => {
     return (<NoteListItem id="id" createdAt={new Date()} text="" />);
 }
 
@@ -64,4 +64,9 @@ export const ErrorInOnClick = () => {
                 onClick={onClick}
                 text="this is a clickable note"
             />);
+}
+
+//space only
+export const SpaceOnly = () => {
+    return (<NoteListItem id="id" createdAt={new Date()} text=" " />);
 }

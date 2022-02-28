@@ -1,23 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import ReactMarkdown from 'react-markdown';
+import formatDate from "../util/formatDate";
 
 export default function NoteListItem(props) {
-    const { id, text, dateTimeText, onClick } = props;
+    const {
+        createdAt,
+        id,
+        onClick = () => {},
+        text
+    } = props;
+
+    // const [timesClicked, setTimesClick] = useState(0);
+
+    let truncatedText;
+    if (text.length > 200) {
+        truncatedText = `${text.substr(0, 200)}...`;
+    } else if (text.trim() === "") {
+        truncatedText = "No note text";
+    } else {
+        truncatedText = text;
+    }
+
+    // const handleItemClick = (event) => {
+    //     event.preventDefault();
+    //     setTimesClick(timesClicked + 1);
+    //     if (onClick) {
+    //         onClick(id)
+    //     }
+    // }
 
     return (
-        <div className="page">
-            <div className="noteListItem">
-                <p>{text}</p>
-                <p>{dateTimeText}</p>
-                <button onClick={() => onClick(id)}>Click</button>
-            </div>
+        <div className="noteListItem" onClick={() => onClick(id)}>
+            <ReactMarkdown children={truncatedText} />
+            <p>
+                {formatDate(createdAt)}
+            </p>
         </div>
     );
 }
 
 NoteListItem.propTypes = {
+    createdAt: PropTypes.instanceOf(Date).isRequired,
     id: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
-    dateTimeText: PropTypes.string.isRequired,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    text: PropTypes.string.isRequired
 };

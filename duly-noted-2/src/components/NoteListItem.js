@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import ReactMarkdown from 'react-markdown';
+import { IonItem, IonLabel } from "@ionic/react";
+import PropTypes from "prop-types";
 import formatDate from "../util/formatDate";
 
 export default function NoteListItem(props) {
+
     const {
         createdAt,
         id,
@@ -11,32 +13,21 @@ export default function NoteListItem(props) {
         text
     } = props;
 
-    // const [timesClicked, setTimesClick] = useState(0);
-
-    let truncatedText;
-    if (text.length > 200) {
-        truncatedText = `${text.substr(0, 200)}...`;
-    } else if (text.trim() === "") {
-        truncatedText = "No note text";
-    } else {
-        truncatedText = text;
+    let truncatedText = text.trim();
+    
+    if (truncatedText.length > 200) {
+        truncatedText =truncatedText.substring(0, 201) + "...";
+    } else if (truncatedText === ""){
+        truncatedText = "No Note Text;"
     }
 
-    // const handleItemClick = (event) => {
-    //     event.preventDefault();
-    //     setTimesClick(timesClicked + 1);
-    //     if (onClick) {
-    //         onClick(id)
-    //     }
-    // }
-
     return (
-        <div className="noteListItem" onClick={() => onClick(id)}>
-            <ReactMarkdown children={truncatedText} />
-            <p>
-                {formatDate(createdAt)}
-            </p>
-        </div>
+        <IonItem onClick={() => onClick(id)}>
+            <IonLabel>
+                <ReactMarkdown children={truncatedText} />
+                <p>{formatDate(createdAt)}</p>
+            </IonLabel>
+        </IonItem>
     );
 }
 

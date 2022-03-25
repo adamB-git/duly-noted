@@ -1,0 +1,17 @@
+:root {
+	--ion-color-new: #92949c;
+	--ion-color-new-rgb: 146,148,156;
+	--ion-color-new-contrast: #fff;
+	--ion-color-new-contrast-rgb: 255,255,255;
+	--ion-color-new-shade: #808289;
+	--ion-color-new-tint: #9d9fa6;
+    --ion-font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Roboto', sans-serif;
+}
+
+.ios {
+    --ion-background-color: var(--ion-color-new);
+}
+
+.md {
+    --ion-background-color: var(--ion-color-new);
+}

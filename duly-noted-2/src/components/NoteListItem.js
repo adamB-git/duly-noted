@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { IonItem, IonLabel } from "@ionic/react";
 import PropTypes from "prop-types";
 import formatDate from "../util/formatDate";
+import formatNoteItemText from "../util/formatNoteItemText";
 
 export default function NoteListItem(props) {
 
@@ -10,21 +11,13 @@ export default function NoteListItem(props) {
         createdAt,
         id,
         onClick = () => {},
-        text
+        text,
     } = props;
-
-    let truncatedText = text.trim();
-    
-    if (truncatedText.length > 200) {
-        truncatedText =truncatedText.substring(0, 201) + "...";
-    } else if (truncatedText === ""){
-        truncatedText = "No Note Text";
-    }
 
     return (
         <IonItem onClick={() => onClick(id)}>
             <IonLabel>
-                <ReactMarkdown children={truncatedText} />
+                <ReactMarkdown children={formatNoteItemText(text)} />
                 <p>{formatDate(createdAt)}</p>
             </IonLabel>
         </IonItem>

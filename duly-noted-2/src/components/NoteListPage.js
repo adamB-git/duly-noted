@@ -45,7 +45,7 @@ export default function NoteListPage(props) {
         onCompleted(data) {
             if(data && data.createNote) {
                 const id = data.createNote.id;
-                history.push(`/note/edit/${id}`);
+                history.push(`/notes/edit/${id}`);
             }
         },
         refetchQueries: [

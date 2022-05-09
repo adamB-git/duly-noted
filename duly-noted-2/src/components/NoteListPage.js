@@ -9,52 +9,110 @@ import {
     IonFab,
     IonFabButton,
     IonIcon,
-    IonButton
+    IonButtons,
+    IonButton,
 } from "@ionic/react";
-import NoteListItem from "./NoteListItem";
-import { useHistory } from "react-router-dom";
-import useNotes from "../hooks/useNotes";
 import { add, funnel } from "ionicons/icons";
+import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import NoteListItem from "./NoteListItem";
+
+export const GET_NOTES = gql`
+    {
+        notes(isArchived: true) {
+            id
+            createdAt
+            isArchived
+            text
+        }
+    }
+`;
+
+const CREATE_NOTE = gql`
+    mutation createNote($note: CreateNoteInput!){
+        createNote(note: $note){
+            id
+            createdAt
+            isArchived
+            text
+        }
+    }
+`;
 
 export default function NoteListPage(props) {
-    const { notes, createNote } = useNotes();
+    const [createNote] = useMutation(CREATE_NOTE, {
+        onCompleted(data) {
+            if(data && data.createNote) {
+                const id = data.createNote.id;
+                history.push(`/notes/edit/${id}`);
+            }
+        },
+        refetchQueries: [
+            {
+                query: GET_NOTES
+            }
+        ]
+    });
+    const { data } = useQuery(GET_NOTES, {
+        pollInterval: 5000
+    });
+    // const { createNote } = useNotes();
     const history = useHistory();
+    const [showActive, setShowActive] = useState(false);
+    const { t } = useTranslation();
 
-    function handleListItemClick(id) {
+    const notes = (data && data.notes) || [];
+
+    let filteredNotes;
+        if (showActive) {
+            filteredNotes = notes.filter((note) => note.isArchived !== true);
+        } else {
+            filteredNotes = notes;
+        }
+
+    const handleListItemClick = (id) => {
         history.push(`/notes/edit/${id}`);
     };
 
     const handleNewNoteClick = () => {
-        const { id } = createNote();
-        history.push(`/notes/edit/${id}`);
+        createNote({
+            variables: {
+                note: {
+                    text: ""
+                }
+            }
+        });
+    };
+
+    const handleArchiveFilterCLick = () => {
+        setShowActive(!showActive);
     }
-
-    const { t } = useTranslation();
-
-    const [filterArchived, setFilterArchived] = useState(true);
     
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                <IonTitle>{t("noteListPageTitle")}</IonTitle>
-                    <IonButton slot="primary" onClick={() => setFilterArchived(!filterArchived)}>
-                        <IonIcon icon={funnel} />
-                    </IonButton>
+                    <IonButtons slot="secondary">
+                        <IonButton color="secondary" onClick={handleArchiveFilterCLick}>
+                            <IonIcon icon={funnel} />
+                        </IonButton>
+                    </IonButtons>
+                    <IonTitle>{t("noteListPageTitle")}</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
                 <IonList line = "full">
                     {
-                        notes.filter(note => note.isArchived !== filterArchived).map((note) => {
+                        filteredNotes.map((note) => {
                             return (
                                 <NoteListItem
-                                    id={note.id}
-                                    key={note.id}
-                                    text={note.text}
-                                    createdAt={note.createdAt}
-                                    onClick={handleListItemClick}
+                                key={note.id}
+                                id={note.id}
+                                text={note.text}
+                                createdAt={new Date(note.createdAt)}
+                                isArchived={note.isArchived}
+                                onClick={handleListItemClick}
                                 />
                             );
                         })

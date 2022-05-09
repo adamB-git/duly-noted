@@ -36,7 +36,8 @@ export default function useNotes() {
             const id = String(notes.length+1);
 
             const newNote = {
-                id, createdAt: new Date(),
+                id,
+                createdAt: new Date(),
                 text: ""
             };
 
@@ -56,6 +57,19 @@ export default function useNotes() {
                     return {
                         ...note,
                         text: newNoteText
+                    };
+                }
+                return note;
+            });
+    
+            saveNotes(newNotes);
+        },
+        archiveNote(id){
+            const newNotes = notes.map((note) => {
+                if (note.id === id) {
+                    return {
+                        ...note,
+                        isArchived: true
                     };
                 }
                 return note;

@@ -8,12 +8,14 @@ import {
     IonList,
     IonFab,
     IonFabButton,
-    IonIcon
+    IonIcon,
+    IonButton
 } from "@ionic/react";
 import NoteListItem from "./NoteListItem";
 import { useHistory } from "react-router-dom";
 import useNotes from "../hooks/useNotes";
-import { add } from "ionicons/icons";
+import { add, funnel } from "ionicons/icons";
+import { useTranslation } from "react-i18next";
 
 export default function NoteListPage(props) {
     const { notes, createNote } = useNotes();
@@ -27,28 +29,35 @@ export default function NoteListPage(props) {
         const { id } = createNote();
         history.push(`/notes/edit/${id}`);
     }
+
+    const { t } = useTranslation();
+
+    const [filterArchived, setFilterArchived] = useState(true);
     
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Note List</IonTitle>
+                <IonTitle>{t("noteListPageTitle")}</IonTitle>
+                    <IonButton slot="primary" onClick={() => setFilterArchived(!filterArchived)}>
+                        <IonIcon icon={funnel} />
+                    </IonButton>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
                 <IonList line = "full">
                     {
-                    notes.map((note) => {
-                        return (
-                        <NoteListItem
-                            id={note.id}
-                            key={note.id}
-                            text={note.text}
-                            createdAt={note.createdAt}
-                            onClick={handleListItemClick}
-                        />
-                        );
-                    })
+                        notes.filter(note => note.isArchived !== filterArchived).map((note) => {
+                            return (
+                                <NoteListItem
+                                    id={note.id}
+                                    key={note.id}
+                                    text={note.text}
+                                    createdAt={note.createdAt}
+                                    onClick={handleListItemClick}
+                                />
+                            );
+                        })
                     }
                 </IonList>
                 <IonFab vertical="bottom" horizontal="end" slot="fixed">
